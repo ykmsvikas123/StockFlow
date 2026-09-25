@@ -1,0 +1,12 @@
+{
+  "name": "Pashmina Flow",
+  "short_name": "Pashmina Flow",
+  "description": "Offline-first production and stock tracker for pashmina shawls, stoles, and lohis.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f7",
+  "theme_color": "#123c3a",
+  "lang": "en",
+  "orientation": "portrait-primary",
+  "icons": []
+}

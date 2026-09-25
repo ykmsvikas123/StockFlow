@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#123c3a" />
+    <meta name="description" content="146enterprises production, stock, quality, and customer tracker for pashmina shawls, stoles, and lohis." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>146enterprises</title>
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside id="sidebar" class="sidebar">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">PF</div>
+          <div>
+            <strong>146enterprises</strong>
+            <span>Production tracker</span>
+          </div>
+        </div>
+        <div class="workspace-card">
+          <span class="eyebrow">Workspace</span>
+          <strong>146enterprises</strong>
+          <span class="muted">Website development workspace</span>
+        </div>
+        <nav id="main-nav" class="main-nav" aria-label="Main navigation"></nav>
+        <div class="sidebar-footer">
+          <button class="nav-item" data-view="learn" type="button">
+            <span class="nav-icon">?</span><span>Learn the system</span>
+          </button>
+          <button class="nav-item" data-view="settings" type="button">
+            <span class="nav-icon">⚙</span><span>Settings</span>
+          </button>
+          <div class="offline-note"><span class="status-dot"></span><span>Changes save on this device</span></div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <button id="menu-toggle" class="icon-button mobile-only" type="button" aria-label="Open menu">☰</button>
+          <div class="topbar-context">
+            <span class="topbar-kicker">Operations workspace</span>
+            <span id="page-context">Dashboard</span>
+          </div>
+          <div class="topbar-actions">
+            <div id="sync-indicator" class="sync-indicator" title="Offline-first sync status">
+              <span class="status-dot"></span><span>Local mode</span>
+            </div>
+            <button id="sync-button" class="button button-quiet" type="button" data-action="sync-now">
+              <span>↻</span> Sync
+            </button>
+            <button class="icon-button notification-button" data-view="alerts" type="button" aria-label="Open alerts">
+              <span>♢</span><span id="notification-count" class="notification-count">0</span>
+            </button>
+            <div class="user-chip">
+              <span id="user-avatar" class="avatar">O</span>
+              <span class="user-chip-copy"><strong id="user-name">Owner</strong><small>Owner access</small></span>
+              <button class="user-menu-button" data-action="toggle-user-menu" type="button" aria-label="Change user">⌄</button>
+            </div>
+          </div>
+        </header>
+        <section id="app-content" class="page-content" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div id="modal-root"></div>
+    <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+    <noscript>
+      <div style="padding:2rem;font-family:system-ui">Pashmina Flow needs JavaScript enabled to run.</div>
+    </noscript>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

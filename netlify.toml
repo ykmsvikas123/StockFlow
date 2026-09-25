@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+
+# This is a static website; Netlify does not need a build command for the
+# first vanilla JavaScript version.
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
