@@ -1,6 +1,6 @@
 // sw.js
 // The service worker makes the app shell available after the first online visit.
-const CACHE_NAME = 'pashmina-flow-shell-v2';
+const CACHE_NAME = 'pashmina-flow-shell-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -10,10 +10,13 @@ const APP_SHELL = [
   './sync.js',
   './manifest.webmanifest',
 ];
+// Bypass the browser's HTTP cache while installing a new app-shell version.
+// Without this, a service worker can cache an older CSS or JS file by mistake.
+const APP_SHELL_REQUESTS = APP_SHELL.map((path) => new Request(path, { cache: 'reload' }));
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()),
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL_REQUESTS)).then(() => self.skipWaiting()),
   );
 });
 
