@@ -1,6 +1,6 @@
 // sw.js
 // The service worker makes the app shell available after the first online visit.
-const CACHE_NAME = 'pashmina-flow-shell-v1';
+const CACHE_NAME = 'pashmina-flow-shell-v2';
 const APP_SHELL = [
   './',
   './index.html',

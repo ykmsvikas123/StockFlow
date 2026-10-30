@@ -396,6 +396,28 @@ function createSampleState() {
   };
 }
 
+// A clean workspace after a full data deletion. The owner, company settings and
+// default locations stay so the app still has valid choices for new records.
+function createEmptyState() {
+  const base = createSampleState();
+  return {
+    ...base,
+    meta: { ...base.meta, serverVersion: 0, lastSyncAt: null, localOnly: true },
+    products: [],
+    vendors: [],
+    customers: [],
+    threadStock: [],
+    batches: [],
+    movements: [],
+    notes: [],
+    quality: [],
+    notifications: [],
+    activity: [],
+    customFields: [],
+    users: base.users.filter((user) => user.role === 'owner'),
+  };
+}
+
 function normalizeState(raw) {
   const base = createSampleState();
   if (!raw || typeof raw !== 'object') return base;
@@ -823,7 +845,7 @@ function renderLearn() {
 function renderSettings() {
   const fieldRows = appState.customFields.map((field) => `<div class="setting-row"><div><strong>${escapeHtml(field.label)}</strong><span>${escapeHtml(titleCase(field.type))} field</span></div><button class="icon-button danger-text small" type="button" data-action="delete-field" data-field-id="${field.id}" aria-label="Delete ${escapeHtml(field.label)}">${icon('close')}</button></div>`).join('');
   const userRows = appState.users.filter((user) => user.active).map((user) => `<div class="setting-row"><div class="user-setting"><span class="avatar avatar-small">${initials(user.name)}</span><div><strong>${escapeHtml(user.name)}</strong><span>${user.role === 'owner' ? 'Owner access' : 'Employee access'}</span></div></div>${user.role === 'owner' ? statusBadge('available', 'Full access') : statusBadge('progress', 'Can update work')}</div>`).join('');
-  return `<div class="standard-page">${pageHeading('Workspace control', 'Settings', 'Shape the app around your operation. These settings do not add accounting features.', '')}<div class="settings-grid"><section class="panel"><div class="panel-heading"><div><span class="eyebrow">Product catalog</span><h2>Custom product fields</h2></div>${icon('box', 'panel-heading-icon')}</div><p class="panel-intro">Add a field such as grade, count, GSM, or width. It will appear when you create a product.</p>${fieldRows || '<p class="muted-copy">No custom fields added yet.</p>'}<form class="inline-form" data-form="custom-field"><input name="label" placeholder="Field name, e.g. GSM" required /><select name="type"><option value="text">Text</option><option value="number">Number</option><option value="date">Date</option></select><button class="button button-primary button-small" type="submit">Add field</button></form></section><section class="panel"><div class="panel-heading"><div><span class="eyebrow">Alert rules</span><h2>Keep notifications useful</h2></div>${icon('bell', 'panel-heading-icon')}</div><p class="panel-intro">Alerts are shown inside the app so you can decide which events deserve attention.</p><form class="settings-form" data-form="settings"><label class="field-label">Default low-stock level (kg)</label><input name="lowStockKg" type="number" min="0" step="0.1" value="${escapeHtml(appState.settings.lowStockKg)}" /><label class="field-label">Days before a deadline to warn</label><input name="alertLeadDays" type="number" min="0" max="30" value="${escapeHtml(appState.settings.alertLeadDays)}" /><div class="form-actions"><span class="muted-copy">Changes apply to future and existing alerts.</span><button class="button button-primary button-small" type="submit">Save settings</button></div></form></section><section class="panel"><div class="panel-heading"><div><span class="eyebrow">People</span><h2>Owner and employees</h2></div>${icon('users', 'panel-heading-icon')}</div><p class="panel-intro">This prototype uses a shared employee login with a name selector. Individual secure PINs can be added when the app is hosted.</p>${userRows}<form class="inline-form" data-form="new-user"><input name="name" placeholder="Employee name" required /><button class="button button-secondary button-small" type="submit">Add employee</button></form></section><section class="panel backup-panel"><div class="panel-heading"><div><span class="eyebrow">Data safety</span><h2>Offline backup</h2></div>${icon('shield', 'panel-heading-icon')}</div><p class="panel-intro">Export a readable JSON backup before clearing browser data or changing devices. JSON is a plain-text data format used for backups and migration.</p><div class="backup-actions">${button(`${icon('download')} Download backup`, 'export-backup', 'primary')}<label class="button button-secondary file-button">${icon('upload')} Import backup<input type="file" accept="application/json" data-import-backup /></label>${button('Reset sample data', 'reset-data', 'danger')}</div><div class="sync-explainer"><span class="status-dot"></span><div><strong>Current mode: ${navigator.onLine ? 'online, local-first' : 'offline'}</strong><p>Press Sync to try the optional development server. If it is not connected, your data still remains safe on this device.</p></div></div></section></div></div>`;
+  return `<div class="standard-page">${pageHeading('Workspace control', 'Settings', 'Shape the app around your operation. These settings do not add accounting features.', '')}<div class="settings-grid"><section class="panel"><div class="panel-heading"><div><span class="eyebrow">Product catalog</span><h2>Custom product fields</h2></div>${icon('box', 'panel-heading-icon')}</div><p class="panel-intro">Add a field such as grade, count, GSM, or width. It will appear when you create a product.</p>${fieldRows || '<p class="muted-copy">No custom fields added yet.</p>'}<form class="inline-form" data-form="custom-field"><input name="label" placeholder="Field name, e.g. GSM" required /><select name="type"><option value="text">Text</option><option value="number">Number</option><option value="date">Date</option></select><button class="button button-primary button-small" type="submit">Add field</button></form></section><section class="panel"><div class="panel-heading"><div><span class="eyebrow">Alert rules</span><h2>Keep notifications useful</h2></div>${icon('bell', 'panel-heading-icon')}</div><p class="panel-intro">Alerts are shown inside the app so you can decide which events deserve attention.</p><form class="settings-form" data-form="settings"><label class="field-label">Default low-stock level (kg)</label><input name="lowStockKg" type="number" min="0" step="0.1" value="${escapeHtml(appState.settings.lowStockKg)}" /><label class="field-label">Days before a deadline to warn</label><input name="alertLeadDays" type="number" min="0" max="30" value="${escapeHtml(appState.settings.alertLeadDays)}" /><div class="form-actions"><span class="muted-copy">Changes apply to future and existing alerts.</span><button class="button button-primary button-small" type="submit">Save settings</button></div></form></section><section class="panel"><div class="panel-heading"><div><span class="eyebrow">People</span><h2>Owner and employees</h2></div>${icon('users', 'panel-heading-icon')}</div><p class="panel-intro">This prototype uses a shared employee login with a name selector. Individual secure PINs can be added when the app is hosted.</p>${userRows}<form class="inline-form" data-form="new-user"><input name="name" placeholder="Employee name" required /><button class="button button-secondary button-small" type="submit">Add employee</button></form></section><section class="panel backup-panel"><div class="panel-heading"><div><span class="eyebrow">Data safety</span><h2>Offline backup</h2></div>${icon('shield', 'panel-heading-icon')}</div><p class="panel-intro">Export a readable JSON backup before clearing browser data or changing devices. JSON is a plain-text data format used for backups and migration.</p><div class="backup-actions">${button(`${icon('download')} Download backup`, 'export-backup', 'primary')}<label class="button button-secondary file-button">${icon('upload')} Import backup<input type="file" accept="application/json" data-import-backup /></label>${button('Reset sample data', 'reset-data', 'secondary')}${button(`${icon('warning')} Delete all data`, 'delete-all', 'danger')}</div><div class="sync-explainer"><span class="status-dot"></span><div><strong>Current mode: ${navigator.onLine ? 'online, local-first' : 'offline'}</strong><p>Press Sync to try the optional development server. If it is not connected, your data still remains safe on this device.</p></div></div></section></div></div>`;
 }
 
 // -----------------------------------------------------------------------------
@@ -895,6 +917,8 @@ function renderModal() {
     html = modalShell(`Look inside ${fileName}`, 'Use this as a small learning exercise', `<div class="file-preview"><div class="file-preview-header"><span class="file-icon file-js">${fileName.endsWith('.html') ? 'HTML' : fileName.endsWith('.css') ? 'CSS' : 'JS'}</span><strong>${escapeHtml(fileName)}</strong></div><p>${escapeHtml(descriptions[fileName] || 'Open this file in the project folder to read the code.')}</p><div class="code-snippet"><code>const app = document.querySelector('#app-content');<br />app.innerHTML = renderView();<br />renderApp();</code></div></div><div class="modal-footer"><span class="muted-copy">Tip: change one small thing, reload, and compare.</span><button class="button button-primary" type="button" data-action="close-modal">Close</button></div>`);
   } else if (type === 'reset') {
     html = modalShell('Reset sample data?', 'This removes the local records on this device.', `<div class="danger-callout">${icon('warning')}<p>Export a backup first if you want to keep the current data. This prototype reset cannot be undone.</p></div><div class="modal-footer"><button class="button button-secondary" type="button" data-action="export-backup">Export first</button><div><button class="button button-secondary" type="button" data-action="close-modal">Cancel</button><button class="button button-danger" type="button" data-action="confirm-reset">Reset everything</button></div></div>`);
+  } else if (type === 'delete-all') {
+    html = modalShell('Delete all data?', 'This permanently removes the business records on this device.', `<div class="danger-callout">${icon('warning')}<p><strong>This cannot be undone.</strong> All batches, products, thread stock, vendors, customers, notes, quality records, stock movements, alerts and activity will be deleted. The owner, company settings and default locations are kept.</p></div><div class="modal-footer"><button class="button button-secondary" type="button" data-action="export-backup">Export backup first</button><div><button class="button button-secondary" type="button" data-action="close-modal">Cancel</button><button class="button button-danger" type="button" data-action="confirm-delete-all">Delete all data</button></div></div>`);
   }
   root.innerHTML = html;
 }
@@ -1175,6 +1199,27 @@ async function confirmReset() {
   showToast('Sample workspace restored.', 'success');
 }
 
+async function confirmDeleteAll() {
+  // Keep the last known server version so a later Sync can replace the shared
+  // copy with this now-empty workspace instead of creating a version conflict.
+  const serverVersion = Number(appState.meta.serverVersion || 0);
+  await clearLocalState();
+  appState = createEmptyState();
+  appState.meta.serverVersion = serverVersion;
+  session = { role: 'owner', employeeId: 'owner' };
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(session));
+  rebuildAlerts();
+  await saveState(appState);
+  closeModal();
+  currentView = 'dashboard';
+  selectedBatchId = null;
+  searchTerm = '';
+  batchFilters = { status: 'all', stage: 'all' };
+  inventoryTab = 'thread';
+  renderApp();
+  showToast('All data deleted. The workspace is empty.', 'success');
+}
+
 // -----------------------------------------------------------------------------
 // Actions, sync, and event wiring
 // -----------------------------------------------------------------------------
@@ -1246,7 +1291,10 @@ function handleAction(action, target) {
     case 'open-learning-guide': openModal('learning-guide'); break;
     case 'show-file': openModal('show-file', { file: target.dataset.file }); break;
     case 'close-modal': closeModal(); break;
+    case 'reset-data': openModal('reset'); break;
+    case 'delete-all': openModal('delete-all'); break;
     case 'confirm-reset': void confirmReset(); break;
+    case 'confirm-delete-all': void confirmDeleteAll(); break;
     case 'export-backup': downloadState(appState, `pashmina-flow-${todayISO()}.json`); showToast('Backup downloaded.', 'success'); break;
     case 'inventory-tab': inventoryTab = target.dataset.tab; renderApp(); break;
     case 'clear-filters': searchTerm = ''; batchFilters = { status: 'all', stage: 'all' }; renderApp(); break;
